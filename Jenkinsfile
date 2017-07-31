@@ -42,14 +42,16 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                echo 'create deplyoment dir'
-                echo 'copy dist to deplyoment dir'
-                echo 'download node_modules to deplyoment dir'
+                // Deploy files to specified directory and install production node modules.
+                sh "/var/deployments/deploy_app_pre.sh mh3 ${env.GIT_COMMIT_SHORT}"
+
                 echo 'create deployment descriptor file in deployment dir'
                 echo 'copy configuration to deployment dir'
 
                 echo 'shutdown application server'
-                echo 'update symlink'
+
+                sh "/var/deployments/deploy_app_post.sh mh3 ${env.GIT_COMMIT_SHORT} production"
+
                 echo 'start application server'
             }
         }
