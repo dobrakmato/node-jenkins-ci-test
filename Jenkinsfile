@@ -42,12 +42,23 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                echo 'deploying...'
+                echo 'create deplyoment dir'
+                echo 'copy dist to deplyoment dir'
+                echo 'download node_modules to deplyoment dir'
+                echo 'create deployment descriptor file in deployment dir'
+                echo 'copy configuration to deployment dir'
+
+                echo 'shutdown application server'
+                echo 'update symlink'
+                echo 'start application server'
             }
         }
     }
     post {
         always {
+            // Archive the artifacts
+            archive 'dist/**/*.*'
+
             // report to slack
             echo "Notifying ${env.GIT_COMMIT_AUTHOR_EMAIL_COMBINED} of ${currentBuild.result} of build " +
                     "${currentBuild.displayName} of changeset ${env.GIT_COMMIT} (${env.GIT_COMMIT_SUBJECT})"
