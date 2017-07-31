@@ -43,13 +43,16 @@ pipeline {
         stage('Deploy') {
             steps {
                 // Deploy files to specified directory and install production node modules.
-                sh "/var/deployments/deploy_app_pre.sh mh3 ${env.GIT_COMMIT_SHORT} ${env.WORKSPACE}"
+                nodejs(nodeJSInstallationName: 'v8.1.4', configId: null) {
+                    sh "/var/deployments/deploy_app_pre.sh mh3 ${env.GIT_COMMIT_SHORT} ${env.WORKSPACE}"
+                }
 
                 echo 'create deployment descriptor file in deployment dir'
                 echo 'copy configuration to deployment dir'
 
                 echo 'shutdown application server'
 
+                // Update symlink of deployed app.
                 sh "/var/deployments/deploy_app_post.sh mh3 ${env.GIT_COMMIT_SHORT} production"
 
                 echo 'start application server'
