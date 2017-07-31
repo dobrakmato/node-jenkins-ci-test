@@ -1,5 +1,8 @@
 #!/usr/bin/env groovy
 
+def gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+def shortCommit = gitCommit.take(6)
+
 pipeline {
     agent any
 
@@ -21,10 +24,6 @@ pipeline {
             }
         }
         stage('Deploy') {
-
-            def gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
-            def shortCommit = gitCommit.take(6)
-
             when {
                 expression {
                     currentBuild.result == null || currentBuild.result == 'SUCCESS'
