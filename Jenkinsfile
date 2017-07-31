@@ -43,7 +43,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 // Deploy files to specified directory and install production node modules.
-                sh "/var/deployments/deploy_app_pre.sh mh3 ${env.GIT_COMMIT_SHORT}"
+                sh "/var/deployments/deploy_app_pre.sh mh3 ${env.GIT_COMMIT_SHORT} ${env.WORKSPACE}"
 
                 echo 'create deployment descriptor file in deployment dir'
                 echo 'copy configuration to deployment dir'
