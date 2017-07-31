@@ -26,21 +26,21 @@ pipeline {
                 }
             }
         }
-        stage('🕑 Build') {
+        stage('Build') {
             steps {
                 nodejs(nodeJSInstallationName: 'v8.1.4', configId: null) {
                     sh 'npm run build'
                 }
             }
         }
-        stage('😨 Test') {
+        stage('Test') {
             steps {
                 nodejs(nodeJSInstallationName: 'v8.1.4', configId: null) {
                     sh 'npm test'
                 }
             }
         }
-        stage('😄 Deploy') {
+        stage('Deploy') {
             steps {
                 echo 'deploying...'
             }
@@ -54,7 +54,7 @@ pipeline {
         }
 
         success {
-            echo "😄 Deploying changeset ${env.GIT_COMMIT}/${currentBuild.displayName} (${env.GIT_COMMIT_SUBJECT}) " +
+            echo "Deploying changeset ${env.GIT_COMMIT}/${currentBuild.displayName} (${env.GIT_COMMIT_SUBJECT}) " +
                     "by ${env.GIT_COMMIT_AUTHOR_EMAIL_COMBINED} to folder " +
                     "/var/deployments/mh3-api/${env.GIT_COMMIT_SHORT}"
         }

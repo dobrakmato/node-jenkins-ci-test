@@ -8,7 +8,7 @@ export class ComponentOne {
         }
     }
 
-    throwError(str: string) {
+    throwError(str) {
         throw new Error(str);
     }
 
