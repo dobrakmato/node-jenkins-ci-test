@@ -7,7 +7,7 @@ const component = new ComponentOne();
 
 /* Write PID file. */
 const pidFile = __dirname + '/../app.pid';
-fs.writeFileSync(pidFile);
+fs.writeFileSync(pidFile, '' + process.pid);
 
 /* Routes */
 app.get('/', (req, res) => {
@@ -27,7 +27,7 @@ app.get('/slowrequest', (req, res) => {
 });
 
 /* Listen */
-app.listen(5001, () => {
+const server = app.listen(5001, () => {
     console.log('Server started at 0.0.0.0:5001!');
 });
 
@@ -36,7 +36,8 @@ process.on('SIGINT', () => {
     console.log("\nGracefully shutting down from SIGINT (Ctrl-C)");
 
     // stop accepting new connections and finish existing requests.
-    app.close();
-
-    fs.unlinkSync(pidFile)
+    server.close(() => {
+        console.log("Exiting...");
+        fs.unlinkSync(pidFile);
+    });
 });
