@@ -52,18 +52,24 @@ pipeline {
             }
         }
         stage('Deploy configuration') {
-            echo 'create deployment descriptor file in deployment dir'
-            echo 'copy configuration to deployment dir'
+            steps {
+                echo 'create deployment descriptor file in deployment dir'
+                echo 'copy configuration to deployment dir'
+            }
         }
         stage('Deploy to production') {
-            // Stop running server process.
-            sh "/var/deployments/deploy_app_stop.sh ${env.DEPLOY_NAME} ${env.DEPLOY_ENVIRONMENT}"
+            steps {
+                // Stop running server process.
+                sh "/var/deployments/deploy_app_stop.sh ${env.DEPLOY_NAME} ${env.DEPLOY_ENVIRONMENT}"
 
-            // Update symlink of deployed app.
-            sh "/var/deployments/deploy_app_post.sh ${env.DEPLOY_NAME} ${env.GIT_COMMIT_SHORT} ${env.DEPLOY_ENVIRONMENT}"
+                // Update symlink of deployed app.
+                sh "/var/deployments/deploy_app_post.sh ${env.DEPLOY_NAME} ${env.GIT_COMMIT_SHORT} ${env.DEPLOY_ENVIRONMENT}"
 
-            // Start server process.
-            sh "/var/deployments/deploy_app_start.sh ${env.DEPLOY_NAME} ${env.DEPLOY_ENVIRONMENT} node dist/app.js"
+                // Start server process.
+                nodejs(nodeJSInstallationName: 'v8.1.4', configId: null) {
+                    sh "/var/deployments/deploy_app_start.sh ${env.DEPLOY_NAME} ${env.DEPLOY_ENVIRONMENT} node dist/app.js"
+                }
+            }
         }
     }
     post {
@@ -80,8 +86,6 @@ pipeline {
             echo "Deploying changeset ${env.GIT_COMMIT}/${currentBuild.displayName} (${env.GIT_COMMIT_SUBJECT}) " +
                     "by ${env.GIT_COMMIT_AUTHOR_EMAIL_COMBINED} to folder " +
                     "/var/deployments/mh3-api/${env.GIT_COMMIT_SHORT}"
-
-            cleanWs()
         }
     }
 }
