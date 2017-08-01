@@ -6,6 +6,8 @@ pipeline {
         stage('Populate variables') {
             steps {
                 script {
+                    env.BUILD_ID = 'plseDontKillMe'
+
                     env.GIT_COMMIT = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
                     env.GIT_COMMIT_SHORT = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
                     env.GIT_COMMIT_AUTHOR = sh(returnStdout: true, script: 'git log --format="%aN" HEAD -n 1').trim()
