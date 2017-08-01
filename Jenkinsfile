@@ -12,6 +12,9 @@ pipeline {
                     env.GIT_COMMIT_AUTHOR_EMAIL = sh(returnStdout: true, script: 'git log --format="%aE" HEAD -n 1').trim()
                     env.GIT_COMMIT_AUTHOR_EMAIL_COMBINED = sh(returnStdout: true, script: 'git log --format="%aN <%aE>" HEAD -n 1').trim()
                     env.GIT_COMMIT_SUBJECT = sh(returnStdout: true, script: 'git log --format="%s" HEAD -n 1').trim()
+
+                    env.DEPLOY_ENVIRONMENT = "production"
+                    env.DEPLOY_NAME = "mh3"
                 }
             }
         }
@@ -40,23 +43,27 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
+        stage('Deploy files') {
             steps {
                 // Deploy files to specified directory and install production node modules.
                 nodejs(nodeJSInstallationName: 'v8.1.4', configId: null) {
-                    sh "/var/deployments/deploy_app_pre.sh mh3 ${env.GIT_COMMIT_SHORT} ${env.WORKSPACE}"
+                    sh "/var/deployments/deploy_app_pre.sh ${env.DEPLOY_NAME} ${env.GIT_COMMIT_SHORT} ${env.WORKSPACE}"
                 }
-
-                echo 'create deployment descriptor file in deployment dir'
-                echo 'copy configuration to deployment dir'
-
-                echo 'shutdown application server'
-
-                // Update symlink of deployed app.
-                sh "/var/deployments/deploy_app_post.sh mh3 ${env.GIT_COMMIT_SHORT} production"
-
-                echo 'start application server'
             }
+        }
+        stage('Deploy configuration') {
+            echo 'create deployment descriptor file in deployment dir'
+            echo 'copy configuration to deployment dir'
+        }
+        stage('Deploy to production') {
+            // Stop running server process.
+            sh "/var/deployments/deploy_app_stop.sh ${env.DEPLOY_NAME} ${env.DEPLOY_ENVIRONMENT}"
+
+            // Update symlink of deployed app.
+            sh "/var/deployments/deploy_app_post.sh ${env.DEPLOY_NAME} ${env.GIT_COMMIT_SHORT} ${env.DEPLOY_ENVIRONMENT}"
+
+            // Start server process.
+            sh "/var/deployments/deploy_app_start.sh ${env.DEPLOY_NAME} ${env.DEPLOY_ENVIRONMENT} node dist/app.js"
         }
     }
     post {
@@ -73,6 +80,8 @@ pipeline {
             echo "Deploying changeset ${env.GIT_COMMIT}/${currentBuild.displayName} (${env.GIT_COMMIT_SUBJECT}) " +
                     "by ${env.GIT_COMMIT_AUTHOR_EMAIL_COMBINED} to folder " +
                     "/var/deployments/mh3-api/${env.GIT_COMMIT_SHORT}"
+
+            cleanWs()
         }
     }
 }

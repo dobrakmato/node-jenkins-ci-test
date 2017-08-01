@@ -3,6 +3,7 @@ export class ComponentOne {
     createHelloWorld() {
         return {
             hello: 'world',
+            version: 2,
             requested_at: Date.now(),
             success: true,
         }
