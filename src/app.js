@@ -1,8 +1,13 @@
 import express from 'express';
 import {ComponentOne} from "./component1";
+import fs from "fs";
 
 export const app = express();
 const component = new ComponentOne();
+
+/* Write PID file. */
+const pidFile = __dirname + '/../app.pid';
+fs.writeFileSync(pidFile);
 
 /* Routes */
 app.get('/', (req, res) => {
@@ -24,4 +29,14 @@ app.get('/slowrequest', (req, res) => {
 /* Listen */
 app.listen(5001, () => {
     console.log('Server started at 0.0.0.0:5001!');
+});
+
+/* Handle termination */
+process.on('SIGINT', () => {
+    console.log("\nGracefully shutting down from SIGINT (Ctrl-C)");
+
+    // stop accepting new connections and finish existing requests.
+    app.close();
+
+    fs.unlinkSync(pidFile)
 });
