@@ -13,8 +13,18 @@ pipeline {
                     env.GIT_COMMIT_AUTHOR_EMAIL_COMBINED = sh(returnStdout: true, script: 'git log --format="%aN <%aE>" HEAD -n 1').trim()
                     env.GIT_COMMIT_SUBJECT = sh(returnStdout: true, script: 'git log --format="%s" HEAD -n 1').trim()
 
+                    echo "Branch: ${env.BRANCH_NAME}"
+
+                    env.DEPLOY_ENABLED = ['master', 'develop'].contains(env.BRANCH_NAME.toString())
+                    if (env.BRANCH_NAME == 'master') {
+                        env.DEPLOY_ENVIRONMENT = 'production'
+                    } else if (env.BRANCH_NAME == 'develop') {
+                        env.DEPLOY_ENVIRONMENT = 'staging'
+                    } else {
+                        env.DEPLOY_ENVIRONMENT = 'n/a'
+                    }
+
                     /* Configure these appropriately */
-                    env.DEPLOY_ENVIRONMENT = "production"
                     env.DEPLOY_NAME = "mh3"
                 }
             }
@@ -41,6 +51,9 @@ pipeline {
             }
         }
         stage('Deploy files') {
+            when {
+                expression { return env.DEPLOY_ENABLED == true }
+            }
             steps {
                 // Deploy files to specified directory and install production node modules.
                 nodejs(nodeJSInstallationName: 'v8.1.4', configId: null) {
@@ -49,12 +62,18 @@ pipeline {
             }
         }
         stage('Deploy configuration') {
+            when {
+                expression { return env.DEPLOY_ENABLED == true }
+            }
             steps {
                 echo 'create deployment descriptor file in deployment dir'
                 echo 'copy configuration to deployment dir'
             }
         }
         stage('Deploy to production') {
+            when {
+                expression { return env.DEPLOY_ENABLED == true }
+            }
             steps {
                 // Stop running server process.
                 sh "/var/deployments/deploy_app_stop.sh ${env.DEPLOY_NAME} ${env.DEPLOY_ENVIRONMENT}"

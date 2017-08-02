@@ -4,7 +4,7 @@ export default class ComponentOne {
         return {
             hello: 'world',
             breaking: 'changes',
-            version: 10,
+            version: 11,
             requested_at: Date.now(),
             success: true,
         }
