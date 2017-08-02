@@ -91,6 +91,10 @@ pipeline {
         always {
             // Archive the artifacts
             archive 'dist/**/*.*'
+            archive 'artifacts/**/*.*'
+
+            // xunit tests
+            junit 'artifacts/test/*.xml'
 
             // report to slack
             echo "Notifying ${env.GIT_COMMIT_AUTHOR_EMAIL_COMBINED} of ${currentBuild.result} of build " +
