@@ -52,7 +52,7 @@ pipeline {
         }
         stage('Deploy files') {
             when {
-                expression { return env.DEPLOY_ENABLED == true }
+                expression { env.DEPLOY_ENABLED }
             }
             steps {
                 // Deploy files to specified directory and install production node modules.
@@ -63,7 +63,7 @@ pipeline {
         }
         stage('Deploy configuration') {
             when {
-                expression { return env.DEPLOY_ENABLED == true }
+                expression { env.DEPLOY_ENABLED }
             }
             steps {
                 echo 'create deployment descriptor file in deployment dir'
@@ -72,7 +72,7 @@ pipeline {
         }
         stage('Deploy to production') {
             when {
-                expression { return env.DEPLOY_ENABLED == true }
+                expression { env.DEPLOY_ENABLED }
             }
             steps {
                 // Stop running server process.
