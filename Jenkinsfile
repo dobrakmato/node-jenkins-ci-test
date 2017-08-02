@@ -16,6 +16,7 @@ pipeline {
                     echo "Branch: ${env.BRANCH_NAME}"
 
                     env.DEPLOY_ENABLED = ['master', 'develop'].contains(env.BRANCH_NAME.toString())
+
                     if (env.BRANCH_NAME.equals('master')) {
                         env.DEPLOY_ENVIRONMENT = 'production'
                     } else if (env.BRANCH_NAME.equals('develop')) {
@@ -52,7 +53,7 @@ pipeline {
         }
         stage('Deploy files') {
             when {
-                expression { env.DEPLOY_ENABLED }
+                expression { return env.DEPLOY_ENABLED }
             }
             steps {
                 // Deploy files to specified directory and install production node modules.
@@ -63,7 +64,7 @@ pipeline {
         }
         stage('Deploy configuration') {
             when {
-                expression { env.DEPLOY_ENABLED }
+                expression { return env.DEPLOY_ENABLED }
             }
             steps {
                 echo 'create deployment descriptor file in deployment dir'
@@ -72,7 +73,7 @@ pipeline {
         }
         stage('Deploy to production') {
             when {
-                expression { env.DEPLOY_ENABLED }
+                expression { return env.DEPLOY_ENABLED }
             }
             steps {
                 // Stop running server process.
