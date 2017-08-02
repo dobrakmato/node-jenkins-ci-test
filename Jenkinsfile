@@ -17,6 +17,8 @@ pipeline {
 
                     env.DEPLOY_ENABLED = ['master', 'develop'].contains(env.BRANCH_NAME.toString())
 
+                    echo "Deploy enabled: ${env.DEPLOY_ENABLED}"
+
                     if (env.BRANCH_NAME.equals('master')) {
                         env.DEPLOY_ENVIRONMENT = 'production'
                     } else if (env.BRANCH_NAME.equals('develop')) {
