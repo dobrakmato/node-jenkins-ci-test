@@ -3,7 +3,8 @@ export default class ComponentOne {
     createHelloWorld() {
         return {
             hello: 'world',
-            version: 5,
+            breaking: 'changes',
+            version: 10,
             requested_at: Date.now(),
             success: true,
         }
