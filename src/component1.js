@@ -1,9 +1,9 @@
-export class ComponentOne {
+export default class ComponentOne {
 
     createHelloWorld() {
         return {
             hello: 'world',
-            version: 3,
+            version: 5,
             requested_at: Date.now(),
             success: true,
         }

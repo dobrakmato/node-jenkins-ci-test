@@ -1,7 +1,7 @@
 //During the test the env variable is set to test
 process.env.NODE_ENV = 'test';
 
-import {ComponentOne} from "../src/component1";
+import ComponentOne from "../src/component1";
 import {expect} from 'chai';
 import {describe, it} from 'mocha';
 

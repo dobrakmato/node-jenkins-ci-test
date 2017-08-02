@@ -13,18 +13,15 @@ pipeline {
                     env.GIT_COMMIT_AUTHOR_EMAIL_COMBINED = sh(returnStdout: true, script: 'git log --format="%aN <%aE>" HEAD -n 1').trim()
                     env.GIT_COMMIT_SUBJECT = sh(returnStdout: true, script: 'git log --format="%s" HEAD -n 1').trim()
 
+                    /* Configure these appropriately */
                     env.DEPLOY_ENVIRONMENT = "production"
                     env.DEPLOY_NAME = "mh3"
                 }
             }
         }
-        stage('Prepare build') {
+        stage('Install dependencies') {
             steps {
                 nodejs(nodeJSInstallationName: 'v8.1.4', configId: null) {
-                    sh '''node --version
-                    npm --version'''
-                    echo "Building changeset ${env.GIT_COMMIT} (${env.GIT_COMMIT_SUBJECT}) " +
-                            "by ${env.GIT_COMMIT_AUTHOR_EMAIL_COMBINED} as build ${currentBuild.displayName}..."
                     sh 'npm install'
                 }
             }

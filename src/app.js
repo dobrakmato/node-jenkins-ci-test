@@ -1,13 +1,12 @@
 import express from 'express';
-import {ComponentOne} from "./component1";
-import fs from "fs";
+import ComponentOne from "./component1";
+import pid from "./pid";
 
 export const app = express();
 const component = new ComponentOne();
 
 /* Write PID file. */
-const pidFile = __dirname + '/../app.pid';
-fs.writeFileSync(pidFile, '' + process.pid);
+pid.create('/../app.pid');
 
 /* Routes */
 app.get('/', (req, res) => {
@@ -38,6 +37,6 @@ process.on('SIGINT', () => {
     // stop accepting new connections and finish existing requests.
     server.close(() => {
         console.log("Exiting...");
-        fs.unlinkSync(pidFile);
+        pid.delete();
     });
 });
