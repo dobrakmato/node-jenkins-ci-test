@@ -4,7 +4,7 @@ export default class ComponentOne {
         return {
             hello: 'world',
             version: 13,
-            some: ['really', 'breaking', 'changes'],
+            some: ['deploy', 'to', 'production'],
             requested_at: Date.now(),
             success: true,
         }
