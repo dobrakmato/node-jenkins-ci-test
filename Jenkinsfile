@@ -45,7 +45,7 @@ pipeline {
         stage('Test') {
             steps {
                 nodejs(nodeJSInstallationName: 'v8.1.4', configId: null) {
-                    sh 'npm test'
+                    sh 'npm run test-jenkins'
                 }
             }
         }
