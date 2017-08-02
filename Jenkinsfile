@@ -92,6 +92,7 @@ pipeline {
             // Archive the artifacts
             archive 'dist/**/*.*'
             archive 'artifacts/**/*.*'
+            // step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', failNoReports: false, failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 0, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
 
             // xunit tests
             junit 'artifacts/test/*.xml'

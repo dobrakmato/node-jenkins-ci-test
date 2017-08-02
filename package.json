@@ -8,7 +8,7 @@
     "build": "babel src -d dist",
     "serve": "node dist/app.js",
     "test": "mocha tests --recursive --compilers js:babel-register",
-    "test-jenkins": "jenkins-mocha tests/* --compilers js:babel-register"
+    "test-jenkins": "jenkins-mocha --cobertura tests/* --compilers js:babel-register"
   },
   "author": "dobrakmato",
   "license": "ISC",
