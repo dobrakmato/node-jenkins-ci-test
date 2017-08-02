@@ -16,9 +16,9 @@ pipeline {
                     echo "Branch: ${env.BRANCH_NAME}"
 
                     env.DEPLOY_ENABLED = ['master', 'develop'].contains(env.BRANCH_NAME.toString())
-                    if (env.BRANCH_NAME == 'master') {
+                    if (env.BRANCH_NAME.equals('master')) {
                         env.DEPLOY_ENVIRONMENT = 'production'
-                    } else if (env.BRANCH_NAME == 'develop') {
+                    } else if (env.BRANCH_NAME.equals('develop')) {
                         env.DEPLOY_ENVIRONMENT = 'staging'
                     } else {
                         env.DEPLOY_ENVIRONMENT = 'n/a'
